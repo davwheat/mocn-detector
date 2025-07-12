@@ -103,7 +103,7 @@ class IsThereMocnViewModel @Inject constructor(
                         mocnInfoDao.insert(it)
                     }
                 }
-                delay(5_000) // Check every 5 seconds
+                delay(10_000) // Check every 10 seconds
             }
         }
     }
@@ -115,55 +115,69 @@ class IsThereMocnViewModel @Inject constructor(
 
         val allCellInfo: List<CellInfo>? = telephonyManager.allCellInfo
         if (allCellInfo.isNullOrEmpty()) return null
+        val registeredCellInfo = allCellInfo.filter { it.isRegistered }
 
-        for (cellInfo in allCellInfo) {
-            if (cellInfo.isRegistered) {
-                val cellIdentity: CellIdentity = when (cellInfo) {
-                    is CellInfoLte -> cellInfo.cellIdentity
-                    is CellInfoGsm -> cellInfo.cellIdentity
-                    is CellInfoWcdma -> cellInfo.cellIdentity
-                    is CellInfoNr -> cellInfo.cellIdentity
-                    else -> null
-                } ?: continue
-
-                val rplmn = (cellIdentity.mccString ?: "") + (cellIdentity.mncString ?: "")
-                val additionalPlmns = when (
-                    cellIdentity) {
-                    is CellIdentityLte ->
-                        cellIdentity.additionalPlmns
-
-                    is CellIdentityNr ->
-                        cellIdentity.additionalPlmns
-
-                    is CellIdentityGsm ->
-                        cellIdentity.additionalPlmns
-
-                    else ->
-                        emptySet()
-                }
-
-                // detection logic from before
-                val isRanSharing = additionalPlmns.isNotEmpty()
-                val allBroadcastedPlmns = additionalPlmns + rplmn
-                val isMocnDetected =
-                    isRanSharing && allBroadcastedPlmns.contains(hplmn) && rplmn != hplmn
-
-                return MocnInfo(
-                    checkedAt = ZonedDateTime.now(),
-                    hplmn = hplmn,
-                    rplmn = rplmn,
-                    additionalPlmns = additionalPlmns,
-                    isRanSharing = isRanSharing,
-                    isMocnDetected = isMocnDetected,
-                    gcis = allCellInfo.map { cell ->
-                        createGciRatTriple(cellIdentity)
-                    }.distinct()
-                )
-            }
-        }
-
-        return null
+        // Try and match by PLMN
+//        val matchedCellInfo = registeredCellInfo.firstOrNull {
+//            it.cellIdentity.mccString == hplmn.substring(0, 3)
+//                    && it.cellIdentity.mncString == hplmn.substring(3)
+//        }
+//
+//        if (matchedCellInfo != null) {
+//            return createMocnInfoFromCellInfo(matchedCellInfo, hplmn, registeredCellInfo)
+//        } else {
+            val ci = registeredCellInfo.firstOrNull() ?: return null
+            return createMocnInfoFromCellInfo(ci, hplmn, registeredCellInfo)
+//        }
     }
+}
+
+fun createMocnInfoFromCellInfo(
+    cellInfo: CellInfo,
+    hplmn: String,
+    cells: List<CellInfo>
+): MocnInfo? {
+    val cellIdentity: CellIdentity = when (cellInfo) {
+        is CellInfoLte -> cellInfo.cellIdentity
+        is CellInfoGsm -> cellInfo.cellIdentity
+        is CellInfoWcdma -> cellInfo.cellIdentity
+        is CellInfoNr -> cellInfo.cellIdentity
+        else -> null
+    } ?: return null
+
+    val rplmn = (cellIdentity.mccString ?: "") + (cellIdentity.mncString ?: "")
+    val additionalPlmns = when (
+        cellIdentity) {
+        is CellIdentityLte ->
+            cellIdentity.additionalPlmns
+
+        is CellIdentityNr ->
+            cellIdentity.additionalPlmns
+
+        is CellIdentityGsm ->
+            cellIdentity.additionalPlmns
+
+        else ->
+            emptySet()
+    }
+
+    // detection logic from before
+    val isRanSharing = additionalPlmns.isNotEmpty()
+    val allBroadcastedPlmns = additionalPlmns + rplmn
+    val isMocnDetected =
+        isRanSharing && allBroadcastedPlmns.contains(hplmn) && rplmn != hplmn
+
+    return MocnInfo(
+        checkedAt = ZonedDateTime.now(),
+        hplmn = hplmn,
+        rplmn = rplmn,
+        additionalPlmns = additionalPlmns,
+        isRanSharing = isRanSharing,
+        isMocnDetected = isMocnDetected,
+        gcis = cells.map { cell ->
+            createGciRatTriple(cellIdentity)
+        }.distinct()
+    )
 }
 
 val CellIdentity.mccString: String?
