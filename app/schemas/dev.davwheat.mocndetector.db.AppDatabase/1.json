@@ -1,0 +1,70 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "f3a593de659a673bb91bebb37828c339",
+    "entities": [
+      {
+        "tableName": "MocnInfo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `checkedAt` TEXT NOT NULL, `hplmn` TEXT, `rplmn` TEXT, `additionalPlmns` TEXT NOT NULL, `isRanSharing` INTEGER NOT NULL, `isMocnDetected` INTEGER NOT NULL, `gcis` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "checkedAt",
+            "columnName": "checkedAt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hplmn",
+            "columnName": "hplmn",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "rplmn",
+            "columnName": "rplmn",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "additionalPlmns",
+            "columnName": "additionalPlmns",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isRanSharing",
+            "columnName": "isRanSharing",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isMocnDetected",
+            "columnName": "isMocnDetected",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gcis",
+            "columnName": "gcis",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f3a593de659a673bb91bebb37828c339')"
+    ]
+  }
+}
