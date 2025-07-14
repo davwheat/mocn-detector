@@ -28,7 +28,8 @@ internal class AppDatabaseConverters {
     fun toZonedDateTimeString(zonedDateTime: ZonedDateTime): String = zonedDateTime.toString()
 
     @TypeConverter
-    fun gciRatPairListToString(data: List<Triple<String, String, RAT>>): String? = json.encodeToString(data)
+    fun gciRatPairListToString(data: List<Triple<String, String, RAT>>): String? =
+        json.encodeToString(data)
 
     @TypeConverter
     fun gciRatPairListFromString(data: String): List<Triple<String, String, RAT>> =

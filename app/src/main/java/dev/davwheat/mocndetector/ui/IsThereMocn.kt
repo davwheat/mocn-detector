@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.SignalCellularAlt
@@ -61,7 +60,7 @@ fun IsThereMocn(
             item(key = it.id) {
                 Column {
                     MocnItem(modifier = Modifier.fillMaxWidth(), mocnInfo = it)
-                    HorizontalDivider(modifier=Modifier.fillMaxWidth())
+                    HorizontalDivider(modifier = Modifier.fillMaxWidth())
                 }
             }
         }
@@ -130,7 +129,11 @@ fun MocnItem(modifier: Modifier = Modifier, mocnInfo: MocnInfo) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Icon(Icons.Outlined.SignalCellularAlt, contentDescription = null, modifier=Modifier.size(20.dp))
+                    Icon(
+                        Icons.Outlined.SignalCellularAlt,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
                     Text(
                         "PLMN: ${it.first} / CI: ${it.second} / RAT: ${it.third}",
                         style = MaterialTheme.typography.bodyMedium,

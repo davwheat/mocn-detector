@@ -1,13 +1,10 @@
 package dev.davwheat.mocndetector
 
 import android.app.Application
-import android.telephony.TelephonyManager
-import androidx.core.content.getSystemService
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
 import dev.davwheat.mocndetector.db.AppDatabase
 

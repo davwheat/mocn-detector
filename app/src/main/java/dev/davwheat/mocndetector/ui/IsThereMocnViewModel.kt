@@ -18,7 +18,6 @@ import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.davwheat.mocndetector.db.mocninfo.MocnInfo
@@ -126,8 +125,8 @@ class IsThereMocnViewModel @Inject constructor(
 //        if (matchedCellInfo != null) {
 //            return createMocnInfoFromCellInfo(matchedCellInfo, hplmn, registeredCellInfo)
 //        } else {
-            val ci = registeredCellInfo.firstOrNull() ?: return null
-            return createMocnInfoFromCellInfo(ci, hplmn, registeredCellInfo)
+        val ci = registeredCellInfo.firstOrNull() ?: return null
+        return createMocnInfoFromCellInfo(ci, hplmn, registeredCellInfo)
 //        }
     }
 }

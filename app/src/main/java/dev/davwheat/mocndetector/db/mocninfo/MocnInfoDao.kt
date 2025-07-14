@@ -15,4 +15,10 @@ interface MocnInfoDao {
 
     @Query("SELECT * FROM mocninfo ORDER BY checkedAt DESC LIMIT 1000")
     fun watchAll(): Flow<List<MocnInfo>>
+
+    @Query("SELECT * FROM mocninfo WHERE id > :id ORDER BY id ASC LIMIT 1000")
+    suspend fun getAboveId(id: Long): List<MocnInfo>
+
+    @Query("DELETE FROM mocninfo")
+    suspend fun deleteAll()
 }
