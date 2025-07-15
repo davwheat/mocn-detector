@@ -20,6 +20,7 @@ import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.davwheat.mocndetector.UserPreferencesRepository
 import dev.davwheat.mocndetector.db.mocninfo.MocnInfo
 import dev.davwheat.mocndetector.db.mocninfo.MocnInfoDao
 import kotlinx.coroutines.Dispatchers
@@ -88,8 +89,11 @@ class IsThereMocnViewModel @Inject constructor(
     private val telephonyManager: TelephonyManager,
     private val subscriptionManager: SubscriptionManager,
     private val mocnInfoDao: MocnInfoDao,
+    userPreferencesRepository: UserPreferencesRepository,
 ) :
     AndroidViewModel(application) {
+    private val refreshInterval = userPreferencesRepository.watchRefreshInterval()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 10)
 
     val mocnHistory = mocnInfoDao.watchAll().distinctUntilChanged()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -102,7 +106,7 @@ class IsThereMocnViewModel @Inject constructor(
                         mocnInfoDao.insert(it)
                     }
                 }
-                delay(10_000) // Check every 10 seconds
+                delay(refreshInterval.value.toLong() * 1000) // Check every n seconds
             }
         }
     }

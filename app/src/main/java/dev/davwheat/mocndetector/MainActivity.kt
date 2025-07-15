@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -56,12 +57,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MOCNDetectorTheme {
-                CompositionLocalProvider(value = LocalSnackbarHostState provides remember { SnackbarHostState() }) {
+                val snackbar = remember { SnackbarHostState() }
+
+                CompositionLocalProvider(value = LocalSnackbarHostState provides snackbar) {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         snackbarHost = {
-                            SnackbarHost(LocalSnackbarHostState.current!!)
-                        }, floatingActionButton = {
+                            SnackbarHost(snackbar, modifier = Modifier.imePadding())
+                        },
+                        floatingActionButton = {
                             var showingBottomSheet by rememberSaveable { mutableStateOf(false) }
                             val sheetState = rememberModalBottomSheetState()
                             ExtendedFloatingActionButton(
@@ -87,7 +91,8 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                             }
-                        }) { innerPadding ->
+                        },
+                    ) { innerPadding ->
                         val fineLocationPermission = rememberPermissionState(
                             android.Manifest.permission.ACCESS_FINE_LOCATION
                         )
