@@ -10,6 +10,15 @@ plugins {
     alias(libs.plugins.room)
     kotlin("plugin.serialization")
     id("kotlin-parcelize")
+    id("io.sentry.android.gradle") version "3.13.0"
+}
+
+sentry {
+    includeSourceContext.set(true)
+
+    org.set("davwheat")
+    projectName.set("mocn-detector")
+    authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
 }
 
 android {
@@ -51,6 +60,8 @@ android {
             ndk {
                 debugSymbolLevel = "FULL"
             }
+
+            manifestPlaceholders["sentryEnvironment"] = "production"
         }
 
         debug {
@@ -59,6 +70,8 @@ android {
             ndk {
                 debugSymbolLevel = "FULL"
             }
+
+            manifestPlaceholders["sentryEnvironment"] = "development"
         }
     }
     compileOptions {
