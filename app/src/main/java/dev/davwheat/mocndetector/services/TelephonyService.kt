@@ -137,6 +137,7 @@ class TelephonyService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.d("Starting TelephonyService")
+        startForeground(1, createNotification())
 
         if (isMonitoring) {
             Timber.d("Already monitoring, ignoring start command")
@@ -163,7 +164,6 @@ class TelephonyService : Service() {
             return START_NOT_STICKY
         }
 
-        startForeground(1, createNotification())
         serviceScope.launch {
             isMonitoring = true
             Timber.d("Service started, setting up MOCN monitoring")
