@@ -3,8 +3,8 @@ package dev.davwheat.mocndetector.db.mocninfo
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import dev.davwheat.mocndetector.ZonedDateTimeSerializer
-import dev.davwheat.mocndetector.ui.RAT
+import dev.davwheat.mocndetector.serialization.ZonedDateTimeSerializer
+import dev.davwheat.mocndetector.services.RAT
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import java.time.ZonedDateTime

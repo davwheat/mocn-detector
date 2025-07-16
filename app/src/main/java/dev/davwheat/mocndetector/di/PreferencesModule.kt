@@ -1,4 +1,4 @@
-package dev.davwheat.mocndetector
+package dev.davwheat.mocndetector.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore

@@ -2,13 +2,15 @@ package dev.davwheat.mocndetector.ui.settings
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.davwheat.mocndetector.UserPreferencesRepository
+import dev.davwheat.mocndetector.di.UserPreferencesRepository
 import dev.davwheat.mocndetector.db.mocninfo.MocnInfoDao
+import dev.davwheat.mocndetector.services.TelephonyService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -57,6 +59,18 @@ class SettingsViewModel @Inject constructor(
 
     fun deleteAllData() = viewModelScope.launch(Dispatchers.IO) {
         mocnInfoDao.deleteAll()
+    }
+
+    fun startService() {
+        application.startService(
+            Intent(application, TelephonyService::class.java)
+        )
+    }
+
+    fun stopService() {
+        application.stopService(
+            Intent(application, TelephonyService::class.java)
+        )
     }
 
     fun setRefreshInterval(seconds: Int) = viewModelScope.launch(Dispatchers.IO) {

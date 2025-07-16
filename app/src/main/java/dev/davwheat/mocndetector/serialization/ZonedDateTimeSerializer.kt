@@ -1,4 +1,4 @@
-package dev.davwheat.mocndetector
+package dev.davwheat.mocndetector.serialization
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -7,7 +7,6 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializer(forClass = ZonedDateTime::class)

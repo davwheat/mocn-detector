@@ -1,6 +1,6 @@
 [versions]
 accompanistPermissions = "0.37.3"
-agp = "8.12.0-alpha08"
+agp = "8.12.0-alpha09"
 datastorePreferences = "1.0.0"
 hiltAndroid = "2.56.2"
 hiltAndroidCompiler = "2.56.2"
@@ -17,6 +17,7 @@ composeBom = "2025.06.01"
 ksp = "2.1.20-1.0.31"
 roomRuntime = "2.7.2"
 material3 = "1.4.0-alpha17"
+timber = "5.0.1"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -45,6 +46,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

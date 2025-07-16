@@ -1,6 +1,7 @@
 package dev.davwheat.mocndetector
 
 import IsThereMocn
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -40,6 +41,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
@@ -99,8 +102,15 @@ class MainActivity : ComponentActivity() {
                         val phoneStatePermission = rememberPermissionState(
                             android.Manifest.permission.READ_PHONE_STATE
                         )
+                        val notificationPermission =
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) PreviewPermissionState(
+                                PermissionStatus.Granted
+                            )
+                            else rememberPermissionState(
+                                android.Manifest.permission.POST_NOTIFICATIONS
+                            )
 
-                        if (fineLocationPermission.status.isGranted && phoneStatePermission.status.isGranted) {
+                        if (fineLocationPermission.status.isGranted && phoneStatePermission.status.isGranted && notificationPermission.status.isGranted) {
                             IsThereMocn(
                                 modifier = Modifier.fillMaxSize(),
                                 padding = innerPadding + PaddingValues(bottom = 96.dp),
@@ -122,8 +132,10 @@ class MainActivity : ComponentActivity() {
                                 Button(onClick = {
                                     if (!fineLocationPermission.status.isGranted) {
                                         fineLocationPermission.launchPermissionRequest()
-                                    } else {
+                                    } else if (!phoneStatePermission.status.isGranted) {
                                         phoneStatePermission.launchPermissionRequest()
+                                    } else {
+                                        notificationPermission.launchPermissionRequest()
                                     }
                                 }) {
                                     Text("Grant permission")
@@ -135,4 +147,14 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+internal class PreviewPermissionState(
+    override val status: PermissionStatus
+) : PermissionState {
+
+    override val permission: String = ""
+
+    override fun launchPermissionRequest() {}
 }

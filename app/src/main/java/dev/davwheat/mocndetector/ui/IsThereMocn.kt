@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.davwheat.mocndetector.db.mocninfo.MocnInfo
+import dev.davwheat.mocndetector.services.RAT
 import dev.davwheat.mocndetector.ui.IsThereMocnViewModel
-import dev.davwheat.mocndetector.ui.RAT
 import dev.davwheat.mocndetector.ui.theme.MOCNDetectorTheme
 import java.time.ZoneId
 import java.time.ZonedDateTime

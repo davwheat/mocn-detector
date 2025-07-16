@@ -1,4 +1,4 @@
-package dev.davwheat.mocndetector
+package dev.davwheat.mocndetector.di
 
 import android.app.Application
 import androidx.room.Room
@@ -7,7 +7,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.davwheat.mocndetector.db.AppDatabase
-
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -19,7 +18,9 @@ object DatabaseModule {
     ): AppDatabase = Room.databaseBuilder(
         application,
         AppDatabase::class.java, "appdatabase.db"
-    ).build()
+    )
+        .enableMultiInstanceInvalidation()
+        .build()
 
     @Provides
     fun providesMocnInfoDao(

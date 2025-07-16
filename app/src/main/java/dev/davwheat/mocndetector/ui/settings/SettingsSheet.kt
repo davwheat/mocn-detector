@@ -14,6 +14,8 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Output
+import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.Stop
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -91,6 +93,48 @@ fun SettingsSheet(
                 Text("Export data to JSONL")
             }
 
+        }
+
+        Surface(onClick = {
+            viewModel.startService()
+            snackbarState?.let { s ->
+                scope.launch(NonCancellable) {
+                    s.showSnackbar("Background service started")
+                }
+            }
+            onDismissRequest()
+        }) {
+            Row(
+                Modifier
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Outlined.PlayArrow, contentDescription = null)
+                Text("Start background service")
+            }
+        }
+
+        Surface(onClick = {
+            viewModel.stopService()
+            snackbarState?.let { s ->
+                scope.launch(NonCancellable) {
+                    s.showSnackbar("Background service stopped")
+                }
+            }
+            onDismissRequest()
+        }) {
+            Row(
+                Modifier
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Outlined.Stop, contentDescription = null)
+                Text("Stop background service")
+            }
         }
 
         var showConfirmDelete by rememberSaveable { mutableStateOf(false) }

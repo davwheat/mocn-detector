@@ -6,7 +6,7 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import dev.davwheat.mocndetector.db.mocninfo.MocnInfo
 import dev.davwheat.mocndetector.db.mocninfo.MocnInfoDao
-import dev.davwheat.mocndetector.ui.RAT
+import dev.davwheat.mocndetector.services.RAT
 import kotlinx.serialization.json.Json
 import java.time.ZonedDateTime
 

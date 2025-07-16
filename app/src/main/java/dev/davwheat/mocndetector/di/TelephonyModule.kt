@@ -1,4 +1,4 @@
-package dev.davwheat.mocndetector
+package dev.davwheat.mocndetector.di
 
 import android.app.Application
 import android.telephony.SubscriptionManager
@@ -8,10 +8,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-
+import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object TelephonyModule {
 
     @Provides
