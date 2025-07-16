@@ -208,6 +208,10 @@ class TelephonyService : Service() {
         if (allCellInfo.isNullOrEmpty()) return
         val registeredCellInfo = allCellInfo.filter { it.isRegistered }
 
+        val rplmns = telephonyManager.serviceState?.networkRegistrationInfoList?.mapNotNull {
+            it.registeredPlmn
+        } ?: emptyList()
+
         // Try and match by PLMN
         //        val matchedCellInfo = registeredCellInfo.firstOrNull {
         //            it.cellIdentity.mccString == hplmn.substring(0, 3)
@@ -218,7 +222,7 @@ class TelephonyService : Service() {
         //            return createMocnInfoFromCellInfo(matchedCellInfo, hplmn, registeredCellInfo)
         //        } else {
         val ci = registeredCellInfo.firstOrNull() ?: return
-        val mocnInfo = createMocnInfoFromCellInfo(ci, hplmn, registeredCellInfo) ?: return
+        val mocnInfo = createMocnInfoFromCellInfo(ci, hplmn, rplmns.firstOrNull(), registeredCellInfo) ?: return
         //        }
 
         serviceScope.launch(Dispatchers.IO) {
@@ -256,6 +260,7 @@ class TelephonyService : Service() {
 private fun createMocnInfoFromCellInfo(
     cellInfo: CellInfo,
     hplmn: String,
+    rplmn: String?,
     cells: List<CellInfo>
 ): MocnInfo? {
     val cellIdentity: CellIdentity = when (cellInfo) {
@@ -266,7 +271,7 @@ private fun createMocnInfoFromCellInfo(
         else -> null
     } ?: return null
 
-    val rplmn = (cellIdentity.mccString ?: "") + (cellIdentity.mncString ?: "")
+    val rplmn = rplmn ?: ((cellIdentity.mccString ?: "") + (cellIdentity.mncString ?: ""))
     val additionalPlmns = when (
         cellIdentity) {
         is CellIdentityLte ->
