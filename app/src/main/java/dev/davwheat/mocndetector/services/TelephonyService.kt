@@ -152,6 +152,16 @@ class TelephonyService : Service() {
             return START_NOT_STICKY
         }
 
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Timber.e("Permission ACCESS_FINE_LOCATION is not granted")
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
         startForeground(1, createNotification())
         serviceScope.launch {
             isMonitoring = true
