@@ -6,5 +6,6 @@
     alias(libs.plugins.android.hilt) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room) apply false
-    kotlin("plugin.serialization") version "2.1.20" apply false
+    alias(libs.plugins.sentry) apply false
+    alias(libs.plugins.serialization) apply false
 }

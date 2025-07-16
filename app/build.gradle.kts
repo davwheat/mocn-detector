@@ -8,9 +8,9 @@ plugins {
     alias(libs.plugins.android.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
-    kotlin("plugin.serialization")
+    alias(libs.plugins.sentry)
+    alias(libs.plugins.serialization)
     id("kotlin-parcelize")
-    id("io.sentry.android.gradle") version "3.13.0"
 }
 
 sentry {

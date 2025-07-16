@@ -1,6 +1,7 @@
 package dev.davwheat.mocndetector
 
 import IsThereMocn
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,6 +18,8 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
@@ -31,6 +34,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +51,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import dev.davwheat.mocndetector.extension.plus
+import dev.davwheat.mocndetector.services.TelephonyService
 import dev.davwheat.mocndetector.ui.settings.SettingsSheet
 import dev.davwheat.mocndetector.ui.theme.MOCNDetectorTheme
 
@@ -109,8 +114,20 @@ class MainActivity : ComponentActivity() {
                             else rememberPermissionState(
                                 android.Manifest.permission.POST_NOTIFICATIONS
                             )
+                        var startServiceOnGranted by remember { mutableStateOf(false) }
 
                         if (fineLocationPermission.status.isGranted && phoneStatePermission.status.isGranted && notificationPermission.status.isGranted) {
+                            LaunchedEffect(startServiceOnGranted) {
+                                if (startServiceOnGranted) {
+                                    startForegroundService(
+                                        Intent(
+                                            this@MainActivity,
+                                            TelephonyService::class.java
+                                        )
+                                    )
+                                }
+                            }
+
                             IsThereMocn(
                                 modifier = Modifier.fillMaxSize(),
                                 padding = innerPadding + PaddingValues(bottom = 96.dp),
@@ -118,16 +135,23 @@ class MainActivity : ComponentActivity() {
                         } else {
                             Column(
                                 Modifier
+                                    .verticalScroll(rememberScrollState())
                                     .padding(innerPadding)
-                                    .padding(16.dp),
+                                    .padding(16.dp)
+                                    .fillMaxSize(),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(
-                                    4.dp,
+                                    16.dp,
                                     Alignment.CenterVertically
                                 ),
                             ) {
                                 Text(
-                                    text = "Location and phone state permissions are required to detect MOCN, due to Android being Android."
+                                    "Location, phone state and notification permissions are required to detect MOCN in the foreground and background.",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                                Text(
+                                    "GPS Location will not be used, but mobile network cell details will be recorded locally and available for export. Data is not sent to any third parties.",
+                                    style = MaterialTheme.typography.bodyLarge,
                                 )
                                 Button(onClick = {
                                     if (!fineLocationPermission.status.isGranted) {
@@ -137,6 +161,7 @@ class MainActivity : ComponentActivity() {
                                     } else {
                                         notificationPermission.launchPermissionRequest()
                                     }
+                                    startServiceOnGranted = true
                                 }) {
                                     Text("Grant permission")
                                 }
