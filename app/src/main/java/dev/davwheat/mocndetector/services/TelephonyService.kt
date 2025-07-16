@@ -215,7 +215,7 @@ class TelephonyService : Service() {
         return NotificationCompat.Builder(this, notificationChannelId)
             .setContentTitle("Monitoring for MOCN")
             .setContentText("Recording data in the background")
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)
             .build()
     }
