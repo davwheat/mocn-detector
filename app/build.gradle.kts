@@ -16,7 +16,7 @@ plugins {
 sentry {
     includeSourceContext.set(true)
 
-    org.set("davwheat")
+    org.set("davw-network")
     projectName.set("mocn-detector")
     authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
 }
