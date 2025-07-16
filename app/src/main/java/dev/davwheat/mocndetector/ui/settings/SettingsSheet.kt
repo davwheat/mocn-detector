@@ -66,6 +66,7 @@ fun SettingsSheet(
             }
         }
 
+    val isServiceRunning by viewModel.isServiceRunning.collectAsStateWithLifecycle()
     Column(
         modifier
             .fillMaxWidth()
@@ -95,45 +96,47 @@ fun SettingsSheet(
 
         }
 
-        Surface(onClick = {
-            viewModel.startService()
-            snackbarState?.let { s ->
-                scope.launch(NonCancellable) {
-                    s.showSnackbar("Background service started")
+        if (!isServiceRunning) {
+            Surface(onClick = {
+                viewModel.startService()
+                snackbarState?.let { s ->
+                    scope.launch(NonCancellable) {
+                        s.showSnackbar("Background service started")
+                    }
+                }
+                onDismissRequest()
+            }) {
+                Row(
+                    Modifier
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(Icons.Outlined.PlayArrow, contentDescription = null)
+                    Text("Start background service")
                 }
             }
-            onDismissRequest()
-        }) {
-            Row(
-                Modifier
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(Icons.Outlined.PlayArrow, contentDescription = null)
-                Text("Start background service")
-            }
-        }
-
-        Surface(onClick = {
-            viewModel.stopService()
-            snackbarState?.let { s ->
-                scope.launch(NonCancellable) {
-                    s.showSnackbar("Background service stopped")
+        } else {
+            Surface(onClick = {
+                viewModel.stopService()
+                snackbarState?.let { s ->
+                    scope.launch(NonCancellable) {
+                        s.showSnackbar("Background service stopped")
+                    }
                 }
-            }
-            onDismissRequest()
-        }) {
-            Row(
-                Modifier
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(Icons.Outlined.Stop, contentDescription = null)
-                Text("Stop background service")
+                onDismissRequest()
+            }) {
+                Row(
+                    Modifier
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(Icons.Outlined.Stop, contentDescription = null)
+                    Text("Stop background service")
+                }
             }
         }
 

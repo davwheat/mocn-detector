@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Intent
 import dagger.hilt.android.HiltAndroidApp
 import dev.davwheat.mocndetector.services.TelephonyService
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 
 @HiltAndroidApp
@@ -13,7 +15,7 @@ class BaseApplication : Application() {
 
         super.onCreate()
 
-        startService(
+        startForegroundService(
             Intent(this, TelephonyService::class.java)
         )
     }

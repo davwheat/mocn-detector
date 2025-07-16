@@ -36,6 +36,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -96,6 +97,10 @@ fun createGciRatTriple(cellIdentity: CellIdentity): Triple<String, String, RAT> 
 @AndroidEntryPoint
 class TelephonyService : Service() {
 
+    companion object {
+        val isRunning = MutableStateFlow(false)
+    }
+
     @Inject
     lateinit var telephonyManager: TelephonyManager
 
@@ -114,6 +119,8 @@ class TelephonyService : Service() {
 
     private lateinit var refreshInterval: StateFlow<Int>
 
+    private var isMonitoring = false
+
     inner class LocalBinder : Binder() {
         fun getService(): TelephonyService = this@TelephonyService
     }
@@ -122,19 +129,32 @@ class TelephonyService : Service() {
         return binder
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        isRunning.value = true
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.d("Starting TelephonyService")
+
+        if (isMonitoring) {
+            Timber.d("Already monitoring, ignoring start command")
+            return START_STICKY
+        }
+
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.READ_PHONE_STATE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             Timber.e("Permission READ_PHONE_STATE is not granted")
-            throw IllegalStateException("Permission READ_PHONE_STATE is required to run this service")
+            stopSelf()
+            return START_NOT_STICKY
         }
 
         startForeground(1, createNotification())
         serviceScope.launch {
+            isMonitoring = true
             Timber.d("Service started, setting up MOCN monitoring")
             refreshInterval = userPreferencesRepository
                 .watchRefreshInterval()
@@ -154,9 +174,10 @@ class TelephonyService : Service() {
     }
 
     override fun onDestroy() {
-        Timber.d("Stopping TelephonyService")
         super.onDestroy()
         serviceJob.cancel()
+        isRunning.value = false
+        Timber.d("TelephonyService destroyed")
     }
 
     @SuppressLint("MissingPermission")

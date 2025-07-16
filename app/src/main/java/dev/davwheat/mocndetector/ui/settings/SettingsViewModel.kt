@@ -28,6 +28,9 @@ class SettingsViewModel @Inject constructor(
 ) :
     AndroidViewModel(application) {
 
+    val isServiceRunning = TelephonyService.isRunning
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     private val _updateInterval =
         userPreferencesRepository
             .watchRefreshInterval()
